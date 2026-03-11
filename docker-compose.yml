@@ -1,0 +1,23 @@
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./server/.env
+    environment:
+      - NODE_ENV=production
+      - CLIENT_URL=http://localhost:5173
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    # Note: Vite binds to localhost:5173 by default, and inside the container it's mapped to port 80.
+    # We expose port 5173 on the host so it doesn't clash with any other web server, and maps to the Nginx 80.
